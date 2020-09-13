@@ -6,7 +6,7 @@ import java.util.*
  * Disjoint set union.
  */
 class DSU(private val n: Int) {
-    private val parentOrSize = IntArray(n)
+    private val parentOrSize: IntArray = IntArray(n)
 
     /**
      * Merge nodes.
