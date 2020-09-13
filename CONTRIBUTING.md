@@ -33,6 +33,3 @@
 # Pull Requestについて
 
 - テンプレートの `#issue-number` にはどのIssueを解決したか記載して下さい。
-- verifyした提出コード には [AtCoder Library Practice Contest](https://atcoder.jp/contests/practice2) で該当ライブラリの問題をACした提出コードのリンクを張って下さい。
-    - Java版でverifyされているので優先度低めです。
-    - 正直ダサいのでなんかいいやり方とかあれば意見もらえると喜びます。
