@@ -1,8 +1,8 @@
 package jp.atcoder.library.kotlin.stringAlgorithm
 
+import java.lang.Integer.min
 import java.util.*
 import java.util.function.Consumer
-
 
 object StringAlgorithm {
     private fun saNaive(s: IntArray): IntArray {
@@ -40,7 +40,7 @@ object StringAlgorithm {
         while (k < n) {
             val vk = k
             val vrnk = rnk
-            val cmp =  Comparator { x: Int?, y: Int? ->
+            val cmp = Comparator { x: Int?, y: Int? ->
                 if (vrnk[x!!] != vrnk[y!!]) {
                     vrnk[x] - vrnk[y]
                 } else {
@@ -261,5 +261,43 @@ object StringAlgorithm {
 
     fun lcpArray(s: String, sa: IntArray): IntArray {
         return lcpArray(s.toCharArray(), sa)
+    }
+
+    fun zAlgorithm(s: IntArray): IntArray {
+        val n = s.size
+        if (n == 0) return IntArray(0)
+        val z = IntArray(n)
+        var i = 1
+        var j = 0
+        while (i < n) {
+            var k = if (j + z[j] <= i) 0 else min(j + z[j] - i, z[i - j])
+            while (i + k < n && s[k] == s[i + k]) k++
+            z[i] = k
+            if (j + z[j] < i + z[i]) j = i
+            i++
+        }
+        z[0] = n
+        return z
+    }
+
+    fun zAlgorithm(s: CharArray): IntArray {
+        val n = s.size
+        if (n == 0) return IntArray(0)
+        val z = IntArray(n)
+        var i = 1
+        var j = 0
+        while (i < n) {
+            var k = if (j + z[j] <= i) 0 else min(j + z[j] - i, z[i - j])
+            while (i + k < n && s[k] == s[i + k]) k++
+            z[i] = k
+            if (j + z[j] < i + z[i]) j = i
+            i++
+        }
+        z[0] = n
+        return z
+    }
+
+    fun zAlgorithm(s: String): IntArray {
+        return zAlgorithm(s.toCharArray())
     }
 }
