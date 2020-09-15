@@ -36,10 +36,10 @@ internal object MathLib {
      * xのn乗をmで割った余りを返す.
      */
     fun powMod(x: Long, n: Long, m: Long): Long {
+        assert(n >= 0 && m >= 1)
         var x = x
         var n = n
-        assert(n >= 0 && m >= 1)
-        var ans: Long = 1
+        var ans = 1L
         while (n > 0) {
             if (n % 2 == 1L) ans = ans * x % m
             x = x * x % m
