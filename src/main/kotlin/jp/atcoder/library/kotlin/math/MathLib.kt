@@ -1,6 +1,9 @@
 package jp.atcoder.library.kotlin.math
 
 internal object MathLib {
+    /**
+     * xをmで割った余りを返す.
+     */
     fun safeMod(x: Long, m: Long): Long {
         var x = x
         x %= m
@@ -31,6 +34,9 @@ internal object MathLib {
         return longArrayOf(s, m0)
     }
 
+    /**
+     * xのn乗をmで割った余りを返す.
+     */
     fun powMod(x: Long, n: Long, m: Long): Long {
         var x = x
         var n = n
