@@ -24,5 +24,5 @@ class MathLibTest {
     fun nIsPositive() = assertEquals(73741817, MathLib.powMod(2, 30, 1_000_000_007))
 
     @Test
-    fun nIszero() = assertEquals(1, MathLib.powMod(100, 0, 1_000_000_007))
+    fun nIsZero() = assertEquals(1, MathLib.powMod(100, 0, 1_000_000_007))
 }
