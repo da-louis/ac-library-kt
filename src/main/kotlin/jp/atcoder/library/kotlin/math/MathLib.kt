@@ -1,14 +1,14 @@
 package jp.atcoder.library.kotlin.math
 
 internal object MathLib {
-    private fun safeMod(x: Long, m: Long): Long {
+    fun safeMod(x: Long, m: Long): Long {
         var x = x
         x %= m
         if (x < 0) x += m
         return x
     }
 
-    private fun invGcd(a: Long, b: Long): LongArray {
+    fun invGcd(a: Long, b: Long): LongArray {
         var a = a
         a = safeMod(a, b)
         if (a == 0L) return longArrayOf(b, 0)
