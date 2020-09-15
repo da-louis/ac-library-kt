@@ -5,10 +5,8 @@ internal object MathLib {
      * xをmで割った余りを返す.
      */
     fun safeMod(x: Long, m: Long): Long {
-        var x = x
-        x %= m
-        if (x < 0) x += m
-        return x
+        val x = x % m
+        return if (x < 0) x + m else x
     }
 
     fun invGcd(a: Long, b: Long): LongArray {
