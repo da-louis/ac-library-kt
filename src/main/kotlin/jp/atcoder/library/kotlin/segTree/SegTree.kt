@@ -1,7 +1,5 @@
 package jp.atcoder.library.kotlin.segTree
 
-import java.util.*
-
 /**
  * Segment tree(0-indexed)
  */
@@ -22,7 +20,6 @@ class SegTree<S>(private val size: Int, private val e: S, private val op: (S, S)
         innerSize = k
         @Suppress("UNCHECKED_CAST")
         data = Array(innerSize shl 1) { e as Any } as Array<S>
-        Arrays.fill(data, this.e)
     }
 
     operator fun set(p: Int, x: S) {
