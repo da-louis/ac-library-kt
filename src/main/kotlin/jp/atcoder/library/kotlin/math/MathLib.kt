@@ -1,16 +1,16 @@
 package jp.atcoder.library.kotlin.math
 
 internal object MathLib {
-    private fun safe_mod(x: Long, m: Long): Long {
+    private fun safeMod(x: Long, m: Long): Long {
         var x = x
         x %= m
         if (x < 0) x += m
         return x
     }
 
-    private fun inv_gcd(a: Long, b: Long): LongArray {
+    private fun invGcd(a: Long, b: Long): LongArray {
         var a = a
-        a = safe_mod(a, b)
+        a = safeMod(a, b)
         if (a == 0L) return longArrayOf(b, 0)
         var s = b
         var t = a
@@ -31,7 +31,7 @@ internal object MathLib {
         return longArrayOf(s, m0)
     }
 
-    fun pow_mod(x: Long, n: Long, m: Long): Long {
+    fun powMod(x: Long, n: Long, m: Long): Long {
         var x = x
         var n = n
         assert(n >= 0 && m >= 1)
@@ -51,7 +51,7 @@ internal object MathLib {
         var m0: Long = 1
         for (i in 0 until n) {
             assert(1 <= m[i])
-            var r1 = safe_mod(r[i], m[i])
+            var r1 = safeMod(r[i], m[i])
             var m1 = m[i]
             if (m0 < m1) {
                 var tmp = r0
@@ -65,7 +65,7 @@ internal object MathLib {
                 if (r0 % m1 != r1) return longArrayOf(0, 0)
                 continue
             }
-            val ig = inv_gcd(m0, m1)
+            val ig = invGcd(m0, m1)
             val g = ig[0]
             val im = ig[1]
             val u1 = m1 / g
@@ -79,7 +79,7 @@ internal object MathLib {
         return longArrayOf(r0, m0)
     }
 
-    fun floor_sum(n: Long, m: Long, a: Long, b: Long): Long {
+    fun floorSum(n: Long, m: Long, a: Long, b: Long): Long {
         var a = a
         var b = b
         var ans: Long = 0
@@ -91,11 +91,11 @@ internal object MathLib {
             ans += n * (b / m)
             b %= m
         }
-        val y_max = (a * n + b) / m
-        val x_max = y_max * m - b
-        if (y_max == 0L) return ans
-        ans += (n - (x_max + a - 1) / a) * y_max
-        ans += floor_sum(y_max, a, m, (a - x_max % a) % a)
+        val yMax = (a * n + b) / m
+        val xMax = yMax * m - b
+        if (yMax == 0L) return ans
+        ans += (n - (xMax + a - 1) / a) * yMax
+        ans += floorSum(yMax, a, m, (a - xMax % a) % a)
         return ans
     }
 }
