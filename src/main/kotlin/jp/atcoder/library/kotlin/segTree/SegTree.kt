@@ -3,39 +3,39 @@ package jp.atcoder.library.kotlin.segTree
 /**
  * Segment tree(0-indexed)
  */
-class SegTree<S>(private val size: Int, private val e: S, private val op: (S, S) -> S) {
-    private val innerSize: Int
+internal class SegTree<S>(n: Int, op: java.util.function.BinaryOperator<S>, e: S) {
+    private val max: Int = n
+    private val n: Int
+    private val op: java.util.function.BinaryOperator<S>
+    private val e: S
     private val data: Array<S>
 
-    constructor(dat: Array<S>, e: S, op: (S, S) -> S) : this(dat.size, e, op) {
-        System.arraycopy(dat, 0, data, innerSize, dat.size)
-        for (i in innerSize - 1 downTo 1) {
-            data[i] = op(data[i shl 1 or 0], data[i shl 1 or 1])
-        }
+    constructor(dat: Array<S>, op: java.util.function.BinaryOperator<S>, e: S) : this(dat.size, op, e) {
+        build(dat)
     }
 
-    init {
-        var k = 1
-        while (k < size) k = k shl 1
-        innerSize = k
-        @Suppress("UNCHECKED_CAST")
-        data = Array(innerSize shl 1) { e as Any } as Array<S>
+    private fun build(dat: Array<S>) {
+        val l = dat.size
+        System.arraycopy(dat, 0, data, n, l)
+        for (i in n - 1 downTo 1) {
+            data[i] = op.apply(data[i shl 1 or 0], data[i shl 1 or 1])
+        }
     }
 
     operator fun set(p: Int, x: S) {
         var vp = p
         exclusiveRangeCheck(vp)
-        data[innerSize.let { vp += it; vp }] = x
+        data[n.let { vp += it; vp }] = x
         vp = vp shr 1
         while (vp > 0) {
-            data[vp] = op(data[vp shl 1 or 0], data[vp shl 1 or 1])
+            data[vp] = op.apply(data[vp shl 1 or 0], data[vp shl 1 or 1])
             vp = vp shr 1
         }
     }
 
     operator fun get(p: Int): S {
         exclusiveRangeCheck(p)
-        return data[p + innerSize]
+        return data[p + n]
     }
 
     fun prod(l: Int, r: Int): S {
@@ -46,80 +46,91 @@ class SegTree<S>(private val size: Int, private val e: S, private val op: (S, S)
         inclusiveRangeCheck(vr)
         var sumLeft = e
         var sumRight = e
-        vl += innerSize
-        vr += innerSize
+        vl += n
+        vr += n
         while (vl < vr) {
-            if (vl and 1 == 1) sumLeft = op(sumLeft, data[vl++])
-            if (vr and 1 == 1) sumRight = op(data[--vr], sumRight)
+            if (vl and 1 == 1) sumLeft = op.apply(sumLeft, data[vl++])
+            if (vr and 1 == 1) sumRight = op.apply(data[--vr], sumRight)
             vl = vl shr 1
             vr = vr shr 1
         }
-        return op(sumLeft, sumRight)
+        return op.apply(sumLeft, sumRight)
     }
 
     fun allProd(): S {
         return data[1]
     }
 
-    fun maxRight(l: Int, f: (S) -> Boolean): Int {
+    fun maxRight(l: Int, f: java.util.function.Predicate<S>): Int {
         var vl = l
         inclusiveRangeCheck(vl)
-        require(f(e)) { "Identity element must satisfy the condition." }
-        if (vl == size) return size
-        vl += innerSize
+        require(f.test(e)) { "Identity element must satisfy the condition." }
+        if (vl == max) return max
+        vl += n
         var sum = e
         do {
             vl = vl shr Integer.numberOfTrailingZeros(vl)
-            if (!f(op(sum, data[vl]))) {
-                while (vl < innerSize) {
+            if (!f.test(op.apply(sum, data[vl]))) {
+                while (vl < n) {
                     vl = vl shl 1
-                    if (f(op(sum, data[vl]))) {
-                        sum = op(sum, data[vl])
+                    if (f.test(op.apply(sum, data[vl]))) {
+                        sum = op.apply(sum, data[vl])
                         vl++
                     }
                 }
-                return vl - innerSize
+                return vl - n
             }
-            sum = op(sum, data[vl])
+            sum = op.apply(sum, data[vl])
             vl++
         } while (vl and -vl != vl)
-        return size
+        return max
     }
 
-    fun minLeft(r: Int, f: (S) -> Boolean): Int {
+    fun minLeft(r: Int, f: java.util.function.Predicate<S>): Int {
         var vr = r
         inclusiveRangeCheck(vr)
-        require(f(e)) { "Identity element must satisfy the condition." }
+        require(f.test(e)) { "Identity element must satisfy the condition." }
         if (vr == 0) return 0
-        vr += innerSize
+        vr += n
         var sum = e
         do {
             vr--
             while (vr > 1 && vr and 1 == 1) vr = vr shr 1
-            if (!f(op(data[vr], sum))) {
-                while (vr < innerSize) {
+            if (!f.test(op.apply(data[vr], sum))) {
+                while (vr < n) {
                     vr = vr shl 1 or 1
-                    if (f(op(data[vr], sum))) {
-                        sum = op(data[vr], sum)
+                    if (f.test(op.apply(data[vr], sum))) {
+                        sum = op.apply(data[vr], sum)
                         vr--
                     }
                 }
-                return vr + 1 - innerSize
+                return vr + 1 - n
             }
-            sum = op(data[vr], sum)
+            sum = op.apply(data[vr], sum)
         } while (vr and -vr != vr)
         return 0
     }
 
     private fun exclusiveRangeCheck(p: Int) {
-        if (p < 0 || p >= size) {
-            throw IndexOutOfBoundsException("Index $p out of bounds for the range [0, $size).")
+        if (p < 0 || p >= max) {
+            throw IndexOutOfBoundsException(String.format("Index %d out of bounds for the range [%d, %d).", p, 0, max))
         }
     }
 
     private fun inclusiveRangeCheck(p: Int) {
-        if (p < 0 || p > size) {
-            throw IndexOutOfBoundsException("Index $p out of bounds for the range [0, $size].")
+        if (p < 0 || p > max) {
+            throw IndexOutOfBoundsException(String.format("Index %d out of bounds for the range [%d, %d].", p, 0, max))
         }
+    }
+
+    init {
+        var k = 1
+        while (k < n) k = k shl 1
+        this.n = k
+        this.e = e
+        this.op = op
+        @Suppress("UNCHECKED_CAST")
+        data = Array(this.n shl 1) { e as Any } as Array<S>
+        java.util.Arrays.fill(data, this.e)
     }
 }
