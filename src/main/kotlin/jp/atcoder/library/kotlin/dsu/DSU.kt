@@ -4,6 +4,8 @@ import java.util.*
 
 /**
  * Disjoint set union.
+ *
+ * convert from [AtCoderLibraryForJava - DSU](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/DSU/DSU.java)
  */
 class DSU(private val n: Int) {
     private val parentOrSize: IntArray = IntArray(n)
