@@ -2,6 +2,8 @@ package jp.atcoder.library.kotlin.segTree
 
 /**
  * Segment tree(0-indexed)
+ *
+ * convert from [AtCoderLibraryForJava - SegTree](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/SegTree/SegTree.java)
  */
 class SegTree<S>(n: Int, op: java.util.function.BinaryOperator<S>, e: S) {
     private val max: Int = n
