@@ -3,12 +3,23 @@ package jp.atcoder.library.kotlin.segTree
 /**
  * Segment tree(0-indexed)
  */
-internal class SegTree<S>(n: Int, op: java.util.function.BinaryOperator<S>, e: S) {
+class SegTree<S>(n: Int, op: java.util.function.BinaryOperator<S>, e: S) {
     private val max: Int = n
     private val n: Int
     private val op: java.util.function.BinaryOperator<S>
     private val e: S
     private val data: Array<S>
+
+    init {
+        var k = 1
+        while (k < n) k = k shl 1
+        this.n = k
+        this.e = e
+        this.op = op
+        @Suppress("UNCHECKED_CAST")
+        data = Array(this.n shl 1) { e as Any } as Array<S>
+        java.util.Arrays.fill(data, this.e)
+    }
 
     constructor(dat: Array<S>, op: java.util.function.BinaryOperator<S>, e: S) : this(dat.size, op, e) {
         build(dat)
@@ -121,16 +132,5 @@ internal class SegTree<S>(n: Int, op: java.util.function.BinaryOperator<S>, e: S
         if (p < 0 || p > max) {
             throw IndexOutOfBoundsException(String.format("Index %d out of bounds for the range [%d, %d].", p, 0, max))
         }
-    }
-
-    init {
-        var k = 1
-        while (k < n) k = k shl 1
-        this.n = k
-        this.e = e
-        this.op = op
-        @Suppress("UNCHECKED_CAST")
-        data = Array(this.n shl 1) { e as Any } as Array<S>
-        java.util.Arrays.fill(data, this.e)
     }
 }
