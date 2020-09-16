@@ -25,4 +25,7 @@ class MathLibTest {
 
     @Test
     fun nIsZero() = assertEquals(1, MathLib.powMod(100, 0, 1_000_000_007))
+
+    @Test
+    fun squareXIsOverFlow() = assertEquals(32, MathLib.powMod(1_000_000_007L * 1_000_000_007L + 2, 5, 1_000_000_007))
 }

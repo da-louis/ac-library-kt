@@ -37,7 +37,7 @@ internal object MathLib {
      */
     fun powMod(x: Long, n: Long, m: Long): Long {
         assert(n >= 0 && m >= 1)
-        var x = x
+        var x = x % m
         var n = n
         var ans = 1L
         while (n > 0) {
