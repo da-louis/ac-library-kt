@@ -23,14 +23,8 @@ class ModIntFactory(private val mod: Int) {
 
         operator fun plus(mi: ModInt) = ModInt(ma.add(rawValue, mi.rawValue))
         operator fun minus(mi: ModInt) = ModInt(ma.sub(rawValue, mi.rawValue))
-
-        fun mul(mi: ModInt): ModInt {
-            return ModInt(ma.mul(rawValue, mi.rawValue))
-        }
-
-        operator fun div(mi: ModInt): ModInt {
-            return ModInt(ma.div(rawValue, mi.rawValue))
-        }
+        operator fun times(mi: ModInt) = ModInt(ma.mul(rawValue, mi.rawValue))
+        operator fun div(mi: ModInt) = ModInt(ma.div(rawValue, mi.rawValue))
 
         fun inv(): ModInt {
             return ModInt(ma.inv(rawValue))

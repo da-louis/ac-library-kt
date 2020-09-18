@@ -13,10 +13,10 @@ class FenwickTreeTest {
         val b = factory.create(109)
 
         // Simple multiplication.
-        assertEquals(factory.create(109 * 107), a.mul(b))
+        assertEquals(factory.create(109 * 107), a * b)
 
         // Inverse.
-        val c = a.mul(a.inv())
+        val c = a * a.inv()
         assertEquals(factory.create(1), c)
 
         // Overflow test.
@@ -84,5 +84,20 @@ class ModIntTest {
         val b = modFactory1000000007.create(2L * mod1000000007 + 5)
         assertThat((a - b).value)
             .isEqualTo(5)
+    }
+
+    @Test
+    fun times() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        val b = modFactory1000000007.create(2L * mod1000000007 + 5)
+        assertThat((a * b).value)
+            .isEqualTo(50)
+    }
+
+    @Test
+    fun div() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        assertThat((a / a).value)
+            .isEqualTo(1)
     }
 }
