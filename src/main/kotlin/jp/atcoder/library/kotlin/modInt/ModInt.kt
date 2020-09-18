@@ -12,74 +12,72 @@ class ModIntFactory(private val mod: Int) {
         }
     }
 
-    inner class ModInt(private var value: Int) {
-        fun mod(): Int {
-            return mod
-        }
+    inner class ModInt(private var rawValue: Int) {
+        val mod = this@ModIntFactory.mod
 
-        fun value(): Int {
-            return if (ma is ModArithmetic.ModArithmeticMontgomery) {
-                ma.reduce(value.toLong())
-            } else value
+        val value = if (ma is ModArithmetic.ModArithmeticMontgomery) {
+            ma.reduce(rawValue.toLong())
+        } else {
+            rawValue
         }
 
         fun add(mi: ModInt): ModInt {
-            return ModInt(ma.add(value, mi.value))
+            return ModInt(ma.add(rawValue, mi.rawValue))
         }
 
         fun sub(mi: ModInt): ModInt {
-            return ModInt(ma.sub(value, mi.value))
+            return ModInt(ma.sub(rawValue, mi.rawValue))
         }
 
         fun mul(mi: ModInt): ModInt {
-            return ModInt(ma.mul(value, mi.value))
+            return ModInt(ma.mul(rawValue, mi.rawValue))
         }
 
         operator fun div(mi: ModInt): ModInt {
-            return ModInt(ma.div(value, mi.value))
+            return ModInt(ma.div(rawValue, mi.rawValue))
         }
 
         fun inv(): ModInt {
-            return ModInt(ma.inv(value))
+            return ModInt(ma.inv(rawValue))
         }
 
         fun pow(b: Long): ModInt {
-            return ModInt(ma.pow(value, b))
+            return ModInt(ma.pow(rawValue, b))
         }
 
         fun addAsg(mi: ModInt): ModInt {
-            value = ma.add(value, mi.value)
+            rawValue = ma.add(rawValue, mi.rawValue)
             return this
         }
 
         fun subAsg(mi: ModInt): ModInt {
-            value = ma.sub(value, mi.value)
+            rawValue = ma.sub(rawValue, mi.rawValue)
             return this
         }
 
         fun mulAsg(mi: ModInt): ModInt {
-            value = ma.mul(value, mi.value)
+            rawValue = ma.mul(rawValue, mi.rawValue)
             return this
         }
 
         fun divAsg(mi: ModInt): ModInt {
-            value = ma.div(value, mi.value)
+            rawValue = ma.div(rawValue, mi.rawValue)
             return this
         }
 
         override fun toString(): String {
-            return value().toString()
+            return value.toString()
         }
 
         override fun equals(other: Any?): Boolean {
             if (other is ModInt) {
-                return mod() == other.mod() && value() == other.value()
+                return mod == other.mod && value == other.value
             }
             return false
         }
 
         override fun hashCode(): Int {
-            return (1 * 37 + mod()) * 37 + value()
+            return (1 * 37 + mod) * 37 + value
         }
     }
 
