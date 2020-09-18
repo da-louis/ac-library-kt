@@ -1,8 +1,13 @@
 package jp.atcoder.library.kotlin.modInt
 
+/** ModInt を生成するためのファクトリ. */
 class ModIntFactory(private val mod: Int) {
     private val ma = ModArithmetic.of(mod)
 
+    /**
+     * ModInt を生成する.
+     * 生成された ModInt は、[value] をファクトリ生成時に指定した mod で割った余りを持つ.
+     */
     fun create(value: Long): ModInt {
         val v = (value % mod).let { if (it < 0) it + mod else it }
         return if (ma is ModArithmetic.ModArithmeticMontgomery) {
@@ -26,24 +31,32 @@ class ModIntFactory(private val mod: Int) {
         operator fun minus(mi: ModInt) = ModInt(ma.sub(rawValue, mi.rawValue))
         operator fun times(mi: ModInt) = ModInt(ma.mul(rawValue, mi.rawValue))
         operator fun div(mi: ModInt) = ModInt(ma.div(rawValue, mi.rawValue))
+
+        /** (this * inv) % mod = 1 を満たすような inv を ModInt として生成して返す. */
         fun inv() = ModInt(ma.inv(rawValue))
+
+        /** (this ^ [b]) % mod の結果を ModInt として生成して返す. */
         fun pow(b: Long) = ModInt(ma.pow(rawValue, b))
 
+        /** this を this + [mi] に変更する */
         fun addAsg(mi: ModInt): ModInt {
             rawValue = ma.add(rawValue, mi.rawValue)
             return this
         }
 
+        /** this を this - [mi] に変更する */
         fun subAsg(mi: ModInt): ModInt {
             rawValue = ma.sub(rawValue, mi.rawValue)
             return this
         }
 
+        /** this を this * [mi] に変更する */
         fun mulAsg(mi: ModInt): ModInt {
             rawValue = ma.mul(rawValue, mi.rawValue)
             return this
         }
 
+        /** this を this / [mi] に変更する */
         fun divAsg(mi: ModInt): ModInt {
             rawValue = ma.div(rawValue, mi.rawValue)
             return this
