@@ -100,4 +100,18 @@ class ModIntTest {
         assertThat((a / a).value)
             .isEqualTo(1)
     }
+
+    @Test
+    fun inv() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        assertThat((a * a.inv()).value)
+            .isEqualTo(1)
+    }
+
+    @Test
+    fun pow() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 2)
+        assertThat(a.pow(10).value)
+            .isEqualTo(1024)
+    }
 }

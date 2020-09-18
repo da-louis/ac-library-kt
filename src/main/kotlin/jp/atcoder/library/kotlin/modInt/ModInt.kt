@@ -25,14 +25,9 @@ class ModIntFactory(private val mod: Int) {
         operator fun minus(mi: ModInt) = ModInt(ma.sub(rawValue, mi.rawValue))
         operator fun times(mi: ModInt) = ModInt(ma.mul(rawValue, mi.rawValue))
         operator fun div(mi: ModInt) = ModInt(ma.div(rawValue, mi.rawValue))
+        fun inv() = ModInt(ma.inv(rawValue))
+        fun pow(b: Long) = ModInt(ma.pow(rawValue, b))
 
-        fun inv(): ModInt {
-            return ModInt(ma.inv(rawValue))
-        }
-
-        fun pow(b: Long): ModInt {
-            return ModInt(ma.pow(rawValue, b))
-        }
 
         fun addAsg(mi: ModInt): ModInt {
             rawValue = ma.add(rawValue, mi.rawValue)
