@@ -114,4 +114,39 @@ class ModIntTest {
         assertThat(a.pow(10).value)
             .isEqualTo(1024)
     }
+
+    @Test
+    fun addAsg() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        val b = modFactory1000000007.create(2L * mod1000000007 + 5)
+        a.addAsg(b)
+        assertThat(a.value)
+            .isEqualTo(15)
+    }
+
+    @Test
+    fun subAsg() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        val b = modFactory1000000007.create(2L * mod1000000007 + 5)
+        a.subAsg(b)
+        assertThat(a.value)
+            .isEqualTo(5)
+    }
+
+    @Test
+    fun mulAsg() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        val b = modFactory1000000007.create(2L * mod1000000007 + 5)
+        a.mulAsg(b)
+        assertThat(a.value)
+            .isEqualTo(50)
+    }
+
+    @Test
+    fun divAsg() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        a.divAsg(a)
+        assertThat(a.value)
+            .isEqualTo(1)
+    }
 }

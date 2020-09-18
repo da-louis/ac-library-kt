@@ -15,11 +15,12 @@ class ModIntFactory(private val mod: Int) {
     inner class ModInt(private var rawValue: Int) {
         val mod = this@ModIntFactory.mod
 
-        val value = if (ma is ModArithmetic.ModArithmeticMontgomery) {
-            ma.reduce(rawValue.toLong())
-        } else {
-            rawValue
-        }
+        val value: Int
+            get() = if (ma is ModArithmetic.ModArithmeticMontgomery) {
+                ma.reduce(rawValue.toLong())
+            } else {
+                rawValue
+            }
 
         operator fun plus(mi: ModInt) = ModInt(ma.add(rawValue, mi.rawValue))
         operator fun minus(mi: ModInt) = ModInt(ma.sub(rawValue, mi.rawValue))
@@ -27,7 +28,6 @@ class ModIntFactory(private val mod: Int) {
         operator fun div(mi: ModInt) = ModInt(ma.div(rawValue, mi.rawValue))
         fun inv() = ModInt(ma.inv(rawValue))
         fun pow(b: Long) = ModInt(ma.pow(rawValue, b))
-
 
         fun addAsg(mi: ModInt): ModInt {
             rawValue = ma.add(rawValue, mi.rawValue)
