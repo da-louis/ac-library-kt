@@ -1,7 +1,8 @@
 package jp.atcoder.library.kotlin.modInt
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 
 class FenwickTreeTest {
@@ -22,3 +23,31 @@ class FenwickTreeTest {
         assertTrue(a.pow(10000).value() > 0)
     }
 }
+
+class ModIntFactoryTest {
+    private val mod1000000007 = 1_000_000_007
+    private lateinit var modFactory1000000007: ModIntFactory
+
+    @Before
+    fun setUp() {
+        // 今の所immutableですが念の為ここでセット
+        modFactory1000000007 = ModIntFactory(mod1000000007)
+    }
+
+    @Test
+    fun createModIntWithPositiveValue() {
+        val modInt = modFactory1000000007.create(2L * mod1000000007 + 5)
+        assertThat(modInt.mod()).isEqualTo(mod1000000007)
+        assertThat(modInt.value()).isEqualTo(5)
+    }
+
+    @Test
+    fun createModIntWithNegativeValue() {
+        assertThat(modFactory1000000007.create(-2L * mod1000000007 + 5L).value())
+            .isEqualTo(5)
+        assertThat(modFactory1000000007.create(-2L * mod1000000007).value())
+            .isEqualTo(0)
+    }
+}
+
+

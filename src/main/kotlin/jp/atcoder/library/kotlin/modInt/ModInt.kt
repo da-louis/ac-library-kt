@@ -1,15 +1,15 @@
 package jp.atcoder.library.kotlin.modInt
 
-class ModIntFactory(mod: Int) {
-    private val ma: ModArithmetic
-    private val mod: Int
+class ModIntFactory(private val mod: Int) {
+    private val ma = ModArithmetic.of(mod)
 
     fun create(value: Long): ModInt {
-        var v = value
-        if (mod.also { v %= it } < 0) v += mod.toLong()
+        val v = (value % mod).let { if (it < 0) it + mod else it }
         return if (ma is ModArithmetic.ModArithmeticMontgomery) {
             ModInt(ma.generate(v))
-        } else ModInt(v.toInt())
+        } else {
+            ModInt(v.toInt())
+        }
     }
 
     inner class ModInt(private var value: Int) {
@@ -431,10 +431,5 @@ class ModIntFactory(mod: Int) {
                 }
             }
         }
-    }
-
-    init {
-        ma = ModArithmetic.of(mod)
-        this.mod = mod
     }
 }
