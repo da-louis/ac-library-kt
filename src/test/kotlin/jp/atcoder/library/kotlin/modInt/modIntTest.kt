@@ -77,4 +77,12 @@ class ModIntTest {
         assertThat((a + b).value)
             .isEqualTo(15)
     }
+
+    @Test
+    fun minus() {
+        val a = modFactory1000000007.create(2L * mod1000000007 + 10)
+        val b = modFactory1000000007.create(2L * mod1000000007 + 5)
+        assertThat((a - b).value)
+            .isEqualTo(5)
+    }
 }

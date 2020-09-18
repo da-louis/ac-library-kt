@@ -22,10 +22,7 @@ class ModIntFactory(private val mod: Int) {
         }
 
         operator fun plus(mi: ModInt) = ModInt(ma.add(rawValue, mi.rawValue))
-
-        fun sub(mi: ModInt): ModInt {
-            return ModInt(ma.sub(rawValue, mi.rawValue))
-        }
+        operator fun minus(mi: ModInt) = ModInt(ma.sub(rawValue, mi.rawValue))
 
         fun mul(mi: ModInt): ModInt {
             return ModInt(ma.mul(rawValue, mi.rawValue))
