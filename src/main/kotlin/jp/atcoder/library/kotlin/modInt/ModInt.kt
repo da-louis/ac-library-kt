@@ -1,85 +1,80 @@
 package jp.atcoder.library.kotlin.modInt
 
-class ModIntFactory(mod: Int) {
-    private val ma: ModArithmetic
-    private val mod: Int
+/** ModInt を生成するためのファクトリ. */
+class ModIntFactory(private val mod: Int) {
+    private val ma = ModArithmetic.of(mod)
 
+    /**
+     * ModInt を生成する.
+     * 生成された ModInt は、[value] をファクトリ生成時に指定した mod で割った余りを持つ.
+     */
     fun create(value: Long): ModInt {
-        var v = value
-        if (mod.also { v %= it } < 0) v += mod.toLong()
+        val v = (value % mod).let { if (it < 0) it + mod else it }
         return if (ma is ModArithmetic.ModArithmeticMontgomery) {
             ModInt(ma.generate(v))
-        } else ModInt(v.toInt())
+        } else {
+            ModInt(v.toInt())
+        }
     }
 
-    inner class ModInt(private var value: Int) {
-        fun mod(): Int {
-            return mod
-        }
+    inner class ModInt(private var rawValue: Int) {
+        val mod = this@ModIntFactory.mod
 
-        fun value(): Int {
-            return if (ma is ModArithmetic.ModArithmeticMontgomery) {
-                ma.reduce(value.toLong())
-            } else value
-        }
+        val value: Int
+            get() = if (ma is ModArithmetic.ModArithmeticMontgomery) {
+                ma.reduce(rawValue.toLong())
+            } else {
+                rawValue
+            }
 
-        fun add(mi: ModInt): ModInt {
-            return ModInt(ma.add(value, mi.value))
-        }
+        operator fun plus(mi: ModInt) = ModInt(ma.add(rawValue, mi.rawValue))
+        operator fun minus(mi: ModInt) = ModInt(ma.sub(rawValue, mi.rawValue))
+        operator fun times(mi: ModInt) = ModInt(ma.mul(rawValue, mi.rawValue))
+        operator fun div(mi: ModInt) = ModInt(ma.div(rawValue, mi.rawValue))
 
-        fun sub(mi: ModInt): ModInt {
-            return ModInt(ma.sub(value, mi.value))
-        }
+        /** (this * inv) % mod = 1 を満たすような inv を ModInt として生成して返す. */
+        fun inv() = ModInt(ma.inv(rawValue))
 
-        fun mul(mi: ModInt): ModInt {
-            return ModInt(ma.mul(value, mi.value))
-        }
+        /** (this ^ [b]) % mod の結果を ModInt として生成して返す. */
+        fun pow(b: Long) = ModInt(ma.pow(rawValue, b))
 
-        operator fun div(mi: ModInt): ModInt {
-            return ModInt(ma.div(value, mi.value))
-        }
-
-        fun inv(): ModInt {
-            return ModInt(ma.inv(value))
-        }
-
-        fun pow(b: Long): ModInt {
-            return ModInt(ma.pow(value, b))
-        }
-
+        /** this を this + [mi] に変更する */
         fun addAsg(mi: ModInt): ModInt {
-            value = ma.add(value, mi.value)
+            rawValue = ma.add(rawValue, mi.rawValue)
             return this
         }
 
+        /** this を this - [mi] に変更する */
         fun subAsg(mi: ModInt): ModInt {
-            value = ma.sub(value, mi.value)
+            rawValue = ma.sub(rawValue, mi.rawValue)
             return this
         }
 
+        /** this を this * [mi] に変更する */
         fun mulAsg(mi: ModInt): ModInt {
-            value = ma.mul(value, mi.value)
+            rawValue = ma.mul(rawValue, mi.rawValue)
             return this
         }
 
+        /** this を this / [mi] に変更する */
         fun divAsg(mi: ModInt): ModInt {
-            value = ma.div(value, mi.value)
+            rawValue = ma.div(rawValue, mi.rawValue)
             return this
         }
 
         override fun toString(): String {
-            return value().toString()
+            return value.toString()
         }
 
         override fun equals(other: Any?): Boolean {
             if (other is ModInt) {
-                return mod() == other.mod() && value() == other.value()
+                return mod == other.mod && value == other.value
             }
             return false
         }
 
         override fun hashCode(): Int {
-            return (1 * 37 + mod()) * 37 + value()
+            return (1 * 37 + mod) * 37 + value
         }
     }
 
@@ -431,10 +426,5 @@ class ModIntFactory(mod: Int) {
                 }
             }
         }
-    }
-
-    init {
-        ma = ModArithmetic.of(mod)
-        this.mod = mod
     }
 }
