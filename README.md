@@ -8,6 +8,10 @@
     - convertする都合上、上記の目標はなしとしました。
 - ライセンスは本家を踏襲し、[CC0ライセンス](LICENSE)です。必ずよく読んでご利用下さい。
 
+# Documents
+- [docs/ac-library-kt](./docs/ac-library-kt)  
+※ソースコードに記載されているKDocから自動生成したものです。
+
 # Requirement
 
 - IDE
