@@ -28,4 +28,22 @@ class DSUTest {
         val buckets = dsu.groups()
         assertEquals(7, buckets.size)
     }
+
+    fun verifyWithLibraryChecker() {
+        fun readIntegerList() = readLine()!!.split(' ').map(Integer::parseInt)
+
+        val (n, q) = readIntegerList()
+        val dsu = DSU(n)
+        repeat(q) {
+            val (t, u, v) = readIntegerList()
+            when (t) {
+                0 -> dsu.merge(u, v)
+                1 -> {
+                    val ans = if (dsu.same(u, v)) 1 else 0
+                    println(ans)
+                }
+            }
+        }
+
+    }
 }
