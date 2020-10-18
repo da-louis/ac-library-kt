@@ -23,6 +23,3 @@ execClass=`echo $testCodePath | sed s/\.kt$/Kt/ | sed  s/"src\/test\/kotlin\/"//
 command="java -cp $distJarPath $execClass -Xss{stack_size:mb}m"
 # echo $command # comment out (this output cause wrong answer on judge)
 eval $command
-
-
-# bash ./verify.sh src/test/kotlin/jp/atcoder/library/kotlin/dsu/DSUTest.kt $HOME/Desktop/ac-library-kt .
