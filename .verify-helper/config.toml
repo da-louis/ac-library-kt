@@ -2,3 +2,4 @@
 compile = "bash {basedir}/verifyCompile.sh {path} {basedir} {tempdir}"
 execute = "bash {basedir}/verifyExec.sh {path} {basedir} {tempdir}"
 bundle = "false"
+verification_file_suffix = "Test.kt"
