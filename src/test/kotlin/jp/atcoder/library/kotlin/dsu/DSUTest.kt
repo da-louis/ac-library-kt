@@ -1,49 +1,52 @@
 package jp.atcoder.library.kotlin.dsu
 
-import org.junit.Assert.*
-import org.junit.Test
+//import org.junit.Assert.*
+//import org.junit.Test
+import jp.atcoder.library.kotlin.dsu.DSU
 
-class DSUTest {
-    @Test
-    fun dsuTest() {
-        val dsu = DSU(10)
-        dsu.merge(2, 3)
-        dsu.merge(4, 5)
+//class DSUTest {
+////    @Test
+////    fun dsuTest() {
+////        val dsu = DSU(10)
+////        dsu.merge(2, 3)
+////        dsu.merge(4, 5)
+////
+////        // 2-3, 4-5 connected.
+////        assertFalse(dsu.same(2, 5))
+////        dsu.merge(3, 4)
+////
+////        // 2-3-4-5 connected.
+////        assertTrue(dsu.same(2, 5))
+////        assertEquals(4, dsu.size(2))
+////
+////        // leader assertion.
+////        assertEquals(dsu.leader(2), dsu.leader(3))
+////        assertEquals(dsu.leader(2), dsu.leader(4))
+////        assertEquals(dsu.leader(2), dsu.leader(5))
+////        assertNotEquals(dsu.leader(0), dsu.leader(2))
+////
+////        // groups assertion.
+////        val buckets = dsu.groups()
+////        assertEquals(7, buckets.size)
+////    }
+//
+//
+//}
 
-        // 2-3, 4-5 connected.
-        assertFalse(dsu.same(2, 5))
-        dsu.merge(3, 4)
+fun main() {
+    fun readIntegerList() = readLine()!!.split(' ').map(Integer::parseInt)
 
-        // 2-3-4-5 connected.
-        assertTrue(dsu.same(2, 5))
-        assertEquals(4, dsu.size(2))
-
-        // leader assertion.
-        assertEquals(dsu.leader(2), dsu.leader(3))
-        assertEquals(dsu.leader(2), dsu.leader(4))
-        assertEquals(dsu.leader(2), dsu.leader(5))
-        assertNotEquals(dsu.leader(0), dsu.leader(2))
-
-        // groups assertion.
-        val buckets = dsu.groups()
-        assertEquals(7, buckets.size)
-    }
-
-    fun verifyWithLibraryChecker() {
-        fun readIntegerList() = readLine()!!.split(' ').map(Integer::parseInt)
-
-        val (n, q) = readIntegerList()
-        val dsu = DSU(n)
-        repeat(q) {
-            val (t, u, v) = readIntegerList()
-            when (t) {
-                0 -> dsu.merge(u, v)
-                1 -> {
-                    val ans = if (dsu.same(u, v)) 1 else 0
-                    println(ans)
-                }
+    val (n, q) = readIntegerList()
+    val dsu = DSU(n)
+    repeat(q) {
+        val (t, u, v) = readIntegerList()
+        when (t) {
+            0 -> dsu.merge(u, v)
+            1 -> {
+                val ans = if (dsu.same(u, v)) 1 else 0
+                println(ans)
             }
         }
-
     }
+
 }

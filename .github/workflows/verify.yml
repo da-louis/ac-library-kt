@@ -15,36 +15,14 @@ jobs:
     - name: Install dependencies
       run: pip3 install -U online-judge-verify-helper
 
-
-    # required only if you want to verify Haskell code
-    - name: Install dependencies (Haskell)
-      uses: actions/setup-haskell@v1.1
-
     # required only if you want to verify Java code
     - name: Install dependencies (Java)
       uses: actions/setup-java@v1
       with:
         java-version: 11
 
-    # required only if you want to verify C# script files
-    - uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '3.1.101'
-    - name: Install dependencies (C#)
-      run: dotnet tool install -g dotnet-script && echo ::add-path::$HOME/.dotnet/tools
-
-    # required only if you want to verify Go code
-    - name: Install dependencies (Go)
-      uses: actions/setup-go@v2
-
-    # required only if you want to verify Ruby code
-    - name: Install dependencies (Ruby)
-      uses: actions/setup-ruby@v1
-
-    # required only if you want to verify Nim code
-    - name: Install dependencies (Nim)
-      run: sudo apt install nim
-
+    - name: Install dependencies (Kotlin)
+      uses: fwilhe2/setup-kotlin@main
 
     - name: Run tests
       env:
