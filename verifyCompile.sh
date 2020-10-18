@@ -19,7 +19,7 @@ testFileNameWithoutExtention=${tmp[0]}
 
 distJarPath=${tmpDir}/${testFileNameWithoutExtention}.jar
 
-command="kotlinc ${baseDir}/src/main/kotlin/* ${baseDir}/${testCodePath} -include-runtime -d $distJarPath -XXLanguage:+InlineClasses -language-version 1.3"
+command="kotlinc ${baseDir}/src/main/kotlin ${baseDir}/${testCodePath} -include-runtime -d $distJarPath -XXLanguage:+InlineClasses -language-version 1.3"
 echo $command
 eval $command
 
