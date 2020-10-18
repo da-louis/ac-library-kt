@@ -11,7 +11,7 @@ fun main() {
         when (t) {
             0 -> dsu.merge(u, v)
             1 -> {
-                val ans = if (dsu.same(u, v)) 1 else 1
+                val ans = if (dsu.same(u, v)) 1 else 0
                 println(ans)
             }
         }
