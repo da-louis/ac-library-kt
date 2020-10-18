@@ -21,7 +21,7 @@ distJarPath=${tmpDir}/${testFileNameWithoutExtention}.jar
 
 execClass=`echo $testCodePath | sed s/\.kt$/Kt/ | sed  s/"src\/test\/kotlin\/"//`
 command="java -cp $distJarPath $execClass -Xss{stack_size:mb}m"
-echo $command
+# echo $command # comment out (this output cause wrong answer on judge)
 eval $command
 
 
