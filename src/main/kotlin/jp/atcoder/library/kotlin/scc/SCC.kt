@@ -3,7 +3,7 @@ package jp.atcoder.library.kotlin.scc
 /**
  * convert from [AtCoderLibraryForJava - SCC](https://github.com/NASU41/AtCoderLibraryForJava/blob/ee794a298f6d16ab24bd9316e7cae8a9155510e5/SCC/SCC.java)
  */
-class SCC(val n: Int) {
+class SCC(private val n: Int) {
     internal class Edge(var from: Int, var to: Int)
 
     private var m = 0
