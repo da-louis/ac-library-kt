@@ -1,14 +1,14 @@
 package jp.atcoder.library.kotlin.minCostFlow
 
 /**
- * convert from [AtCoderLibraryForJava - MinCostFlow](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/MinCostFlow/MinCostFlow.java)
+ * convert from [AtCoderLibraryForJava - MinCostFlow](https://github.com/NASU41/AtCoderLibraryForJava/blob/3d5e128641057adbce8b4a727bba4079b8fa2c02/MinCostFlow/MinCostFlow.java)
  */
 class MinCostFlow(private val n: Int) {
     inner class WeightedCapEdge internal constructor(
         val from: Int,
         val to: Int,
-        var cap: Long,
-        var cost: Long,
+        var flow: Long,
+        val cost: Long,
         val rev: Int
     )
 
@@ -66,7 +66,6 @@ class MinCostFlow(private val n: Int) {
         return longArrayOf(flow, cost)
     }
 
-    @JvmOverloads
     fun minCostSlope(s: Int, t: Int, flowLimit: Long = INF): ArrayList<LongArray> {
         rangeCheck(s, 0, n)
         rangeCheck(t, 0, n)
@@ -105,7 +104,7 @@ class MinCostFlow(private val n: Int) {
             val u = st.v
             if (st.d != dist[u]) continue
             for (e in g[u]) {
-                if (e!!.cap <= 0) continue
+                if (e!!.flow <= 0) continue
                 val v = e.to
                 val nextCost = dist[u] + e.cost + potential[u] - potential[v]
                 if (nextCost < dist[v]) {
@@ -130,15 +129,15 @@ class MinCostFlow(private val n: Int) {
             while (v != s) {
                 val e = prev[v]
                 addCost += e!!.cost
-                addFlow = Math.min(addFlow, e.cap)
+                addFlow = kotlin.math.min(addFlow, e.flow)
                 v = e.from
             }
         }
         var v = t
         while (v != s) {
             val e = prev[v]
-            e!!.cap -= addFlow
-            g[v][e!!.rev]!!.cap += addFlow
+            e!!.flow -= addFlow
+            g[v][e!!.rev]!!.flow += addFlow
             v = e!!.from
         }
     }
@@ -146,9 +145,9 @@ class MinCostFlow(private val n: Int) {
     fun clearFlow() {
         java.util.Arrays.fill(potential, 0)
         for (e in edges) {
-            val flow = e.cap
-            e.cap += flow
-            g[e.to][e.rev]!!.cap -= flow
+            val flow = e.flow
+            e.flow += flow
+            g[e.to][e.rev]!!.flow -= flow
         }
     }
 

@@ -1,9 +1,9 @@
 package jp.atcoder.library.kotlin.scc
 
 /**
- * convert from [AtCoderLibraryForJava - SCC](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/SCC/SCC.java)
+ * convert from [AtCoderLibraryForJava - SCC](https://github.com/NASU41/AtCoderLibraryForJava/blob/ee794a298f6d16ab24bd9316e7cae8a9155510e5/SCC/SCC.java)
  */
-class SCC(private val n: Int) {
+class SCC(val n: Int) {
     internal class Edge(var from: Int, var to: Int)
 
     private var m = 0
@@ -82,13 +82,13 @@ class SCC(private val n: Int) {
                         stack[ptr++] = 0L shl 32 or to.toLong()
                         par[to] = u
                     } else { // backward edge
-                        low[u] = Math.min(low[u], ord[to])
+                        low[u] = kotlin.math.min(low[u], ord[to])
                     }
                 } else { // no more children (leaving)
                     while (j-- > 0) {
                         val to = orderedEdges[start[u] + j]!!.to
                         // update lowlink
-                        if (par[to] == u) low[u] = Math.min(low[u], low[to])
+                        if (par[to] == u) low[u] = kotlin.math.min(low[u], low[to])
                     }
                     if (low[u] == ord[u]) { // root of a component
                         while (true) { // gathering verticies

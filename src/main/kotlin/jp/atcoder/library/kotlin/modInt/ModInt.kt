@@ -1,6 +1,10 @@
 package jp.atcoder.library.kotlin.modInt
 
-/** ModInt を生成するためのファクトリ. */
+/**
+ * ModInt を生成するためのファクトリ.
+ *
+ * convert from [AtCoderLibraryForJava - FenwickTree](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/FenwickTree/FenwickTree.java)
+ */
 class ModIntFactory(private val mod: Int) {
     private val ma = ModArithmetic.of(mod)
 

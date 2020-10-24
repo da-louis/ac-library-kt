@@ -19,7 +19,7 @@ class SegTree<S>(n: Int, op: java.util.function.BinaryOperator<S>, e: S) {
         this.e = e
         this.op = op
         @Suppress("UNCHECKED_CAST")
-        data = Array(this.n shl 1) { e as Any } as Array<S>
+        data = Array(this.n shl 1) { this.e as Any } as Array<S>
         java.util.Arrays.fill(data, this.e)
     }
 
@@ -133,6 +133,51 @@ class SegTree<S>(n: Int, op: java.util.function.BinaryOperator<S>, e: S) {
     private fun inclusiveRangeCheck(p: Int) {
         if (p < 0 || p > max) {
             throw IndexOutOfBoundsException(String.format("Index %d out of bounds for the range [%d, %d].", p, 0, max))
+        }
+    }
+
+    // **************** DEBUG **************** //
+    private var indent = 6
+    fun setIndent(newIndent: Int) {
+        indent = newIndent
+    }
+
+    override fun toString(): String {
+        return toSimpleString()
+    }
+
+    fun toDetailedString(): String {
+        return toDetailedString(1, 0)
+    }
+
+    private fun toDetailedString(k: Int, sp: Int): String {
+        if (k >= n) return indent(sp) + data[k]
+        var s = ""
+        s += toDetailedString(k shl 1 or 1, sp + indent)
+        s += "\n"
+        s += indent(sp) + data[k]
+        s += "\n"
+        s += toDetailedString(k shl 1 or 0, sp + indent)
+        return s
+    }
+
+    fun toSimpleString(): String {
+        val sb = StringBuilder()
+        sb.append('[')
+        for (i in 0 until n) {
+            sb.append(data[i + n])
+            if (i < n - 1) sb.append(',').append(' ')
+        }
+        sb.append(']')
+        return sb.toString()
+    }
+
+    companion object {
+        private fun indent(n: Int): String {
+            var vn = n
+            val sb = StringBuilder()
+            while (vn-- > 0) sb.append(' ')
+            return sb.toString()
         }
     }
 }
