@@ -1,73 +1,113 @@
 package jp.atcoder.library.kotlin.stringAlgorithm
 
-import java.lang.Integer.min
-import java.util.*
-import java.util.function.Consumer
-
+/**
+ * StringAlgorithm
+ *
+ * convert from [AtCoderLibraryForJava - StringAlgorithm](https://github.com/NASU41/AtCoderLibraryForJava/blob/df25ae43276dff808c3fff91baa6dab5be372c00/StringAlgorithm/StringAlgorithm.java)
+ */
 object StringAlgorithm {
     private fun saNaive(s: IntArray): IntArray {
         val n = s.size
-        val sb = arrayOfNulls<Int>(n)
+        val sa = IntArray(n)
         for (i in 0 until n) {
-            sb[i] = i
+            sa[i] = i
         }
-        Arrays.sort(sb) { l: Int?, r: Int? ->
+        insertionsortUsingComparator(sa, java.util.function.IntBinaryOperator { l: Int, r: Int ->
             var vl = l
             var vr = r
-            while (vl!! < n && vr!! < n) {
-                if (s[vl] != s[vr]) return@sort s[vl] - s[vr]
+            while (vl < n && vr < n) {
+                if (s[vl] != s[vr]) return@IntBinaryOperator s[vl] - s[vr]
                 vl++
                 vr++
             }
-            -(vl - vr!!)
-        }
-        val sa = IntArray(n)
-        for (i in 0 until n) {
-            sa[i] = sb[i]!!
-        }
+            -(vl - vr)
+        })
         return sa
     }
 
     private fun saDoubling(s: IntArray): IntArray {
         val n = s.size
-        val sb = arrayOfNulls<Int>(n)
+        val sa = IntArray(n)
         for (i in 0 until n) {
-            sb[i] = i
+            sa[i] = i
         }
-        var rnk = s
+        var rnk = s.copyOf(n)
         var tmp = IntArray(n)
         var k = 1
         while (k < n) {
             val vk = k
             val vrnk = rnk
-            val cmp = Comparator { x: Int?, y: Int? ->
-                if (vrnk[x!!] != vrnk[y!!]) {
-                    vrnk[x] - vrnk[y]
-                } else {
-                    val rx = if (x + vk < n) vrnk[x + vk] else -1
-                    val ry = if (y + vk < n) vrnk[y + vk] else -1
-                    rx - ry
-                }
+            val cmp = java.util.function.IntBinaryOperator { x: Int, y: Int ->
+                if (vrnk[x] != vrnk[y]) return@IntBinaryOperator vrnk[x] - vrnk[y]
+                val rx = if (x + vk < n) vrnk[x + vk] else -1
+                val ry = if (y + vk < n) vrnk[y + vk] else -1
+                rx - ry
             }
-            Arrays.sort(sb, cmp)
-            tmp[sb[0]!!] = 0
+            mergesortUsingComparator(sa, cmp)
+            tmp[sa[0]] = 0
             for (i in 1 until n) {
-                tmp[sb[i]!!] = tmp[sb[i - 1]!!] + if (cmp.compare(sb[i - 1], sb[i]) < 0) 1 else 0
+                tmp[sa[i]] = tmp[sa[i - 1]] + if (cmp.applyAsInt(sa[i - 1], sa[i]) < 0) 1 else 0
             }
             val buf = tmp
             tmp = rnk
             rnk = buf
             k *= 2
         }
-        val sa = IntArray(n)
-        for (i in 0 until n) {
-            sa[i] = sb[i]!!
-        }
         return sa
     }
 
-    private const val THRESHOLD_NAIVE = 10
-    private const val THRESHOLD_DOUBLING = 40
+    private fun insertionsortUsingComparator(a: IntArray, comparator: java.util.function.IntBinaryOperator) {
+        val n = a.size
+        for (i in 1 until n) {
+            val tmp = a[i]
+            if (comparator.applyAsInt(a[i - 1], tmp) > 0) {
+                var j = i
+                do {
+                    a[j] = a[j - 1]
+                    j--
+                } while (j > 0 && comparator.applyAsInt(a[j - 1], tmp) > 0)
+                a[j] = tmp
+            }
+        }
+    }
+
+    private fun mergesortUsingComparator(a: IntArray, comparator: java.util.function.IntBinaryOperator) {
+        val n = a.size
+        val work = IntArray(n)
+        var block = 1
+        while (block <= n) {
+            val block2 = block shl 1
+            var l = 0
+            val max = n - block
+            while (l < max) {
+                val m = l + block
+                val r = kotlin.math.min(l + block2, n)
+                System.arraycopy(a, l, work, 0, block)
+                var i = l
+                var wi = 0
+                var ti = m
+                while (true) {
+                    if (ti == r) {
+                        System.arraycopy(work, wi, a, i, block - wi)
+                        break
+                    }
+                    if (comparator.applyAsInt(work[wi], a[ti]) > 0) {
+                        a[i] = a[ti++]
+                    } else {
+                        a[i] = work[wi++]
+                        if (wi == block) break
+                    }
+                    i++
+                }
+                l += block2
+            }
+            block = block shl 1
+        }
+    }
+
+    private const val THRESHOLD_NAIVE = 50
+    private const val THRESHOLD_DOUBLING = 0
+
     private fun sais(s: IntArray, upper: Int): IntArray {
         val n = s.size
         if (n == 0) return IntArray(0)
@@ -82,9 +122,9 @@ object StringAlgorithm {
         if (n < THRESHOLD_NAIVE) {
             return saNaive(s)
         }
-        if (n < THRESHOLD_DOUBLING) {
-            return saDoubling(s)
-        }
+        //		if (n < THRESHOLD_DOUBLING) {
+        //			return saDoubling(s);
+        //		}
         val sa = IntArray(n)
         val ls = BooleanArray(n)
         for (i in n - 2 downTo 0) {
@@ -103,8 +143,8 @@ object StringAlgorithm {
             sumS[i] += sumL[i]
             if (i < upper) sumL[i + 1] += sumS[i]
         }
-        val induce = Consumer { lms: IntArray ->
-            Arrays.fill(sa, -1)
+        val induce = java.util.function.Consumer { lms: IntArray ->
+            java.util.Arrays.fill(sa, -1)
             val buf = IntArray(upper + 1)
             System.arraycopy(sumS, 0, buf, 0, upper + 1)
             for (d in lms) {
@@ -128,7 +168,7 @@ object StringAlgorithm {
             }
         }
         val lmsMap = IntArray(n + 1)
-        Arrays.fill(lmsMap, -1)
+        java.util.Arrays.fill(lmsMap, -1)
         var m = 0
         for (i in 1 until n) {
             if (!ls[i - 1] && ls[i]) {
@@ -197,20 +237,19 @@ object StringAlgorithm {
 
     fun suffixArray(s: IntArray): IntArray {
         val n = s.size
-        val idx = arrayOfNulls<Int>(n)
-        for (i in 0 until n) {
-            idx[i] = i
-        }
-        Arrays.sort(idx) { l: Int?, r: Int? -> s[l!!] - s[r!!] }
-        val s2 = IntArray(n)
-        var now = 0
-        for (i in 0 until n) {
-            if (i > 0 && s[idx[i - 1]!!] != s[idx[i]!!]) {
-                now++
+        val vals = s.copyOf(n)
+        java.util.Arrays.sort(vals)
+        var p = 1
+        for (i in 1 until n) {
+            if (vals[i] != vals[i - 1]) {
+                vals[p++] = vals[i]
             }
-            s2[idx[i]!!] = now
         }
-        return sais(s2, now)
+        val s2 = IntArray(n)
+        for (i in 0 until n) {
+            s2[i] = java.util.Arrays.binarySearch(vals, 0, p, s[i])
+        }
+        return sais(s2, p)
     }
 
     fun suffixArray(s: CharArray): IntArray {
@@ -270,7 +309,7 @@ object StringAlgorithm {
         var i = 1
         var j = 0
         while (i < n) {
-            var k = if (j + z[j] <= i) 0 else min(j + z[j] - i, z[i - j])
+            var k = if (j + z[j] <= i) 0 else kotlin.math.min(j + z[j] - i, z[i - j])
             while (i + k < n && s[k] == s[i + k]) k++
             z[i] = k
             if (j + z[j] < i + z[i]) j = i
@@ -287,7 +326,7 @@ object StringAlgorithm {
         var i = 1
         var j = 0
         while (i < n) {
-            var k = if (j + z[j] <= i) 0 else min(j + z[j] - i, z[i - j])
+            var k = if (j + z[j] <= i) 0 else kotlin.math.min(j + z[j] - i, z[i - j])
             while (i + k < n && s[k] == s[i + k]) k++
             z[i] = k
             if (j + z[j] < i + z[i]) j = i

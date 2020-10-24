@@ -1,7 +1,7 @@
 package jp.atcoder.library.kotlin.twoSAT
 
 /**
- * convert from [AtCoderLibraryForJava - TwoSAT](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/2SAT/TwoSAT.java)
+ * convert from [AtCoderLibraryForJava - TwoSAT](https://github.com/NASU41/AtCoderLibraryForJava/blob/e2dcebabdbd41d5c87dc73cb46416864a3ea3f6c/2SAT/TwoSAT.java)
  */
 class TwoSAT(private val n: Int) {
     private val scc: InternalSCC = InternalSCC(2 * n)
@@ -44,7 +44,7 @@ class TwoSAT(private val n: Int) {
     }
 
     private fun rangeCheck(x: Int) {
-        if (0 < x || x >= n) {
+        if (x < 0 || x >= n) {
             throw IndexOutOfBoundsException(String.format("Index %d out of bounds for length %d", x, n))
         }
     }

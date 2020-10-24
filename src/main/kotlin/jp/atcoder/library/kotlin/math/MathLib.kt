@@ -1,20 +1,25 @@
 package jp.atcoder.library.kotlin.math
 
-internal object MathLib {
+/**
+ * MathLib.
+ *
+ * convert from [AtCoderLibraryForJava - MathLib](https://github.com/NASU41/AtCoderLibraryForJava/blob/132179385293fd6c0d522d73f3f48435967fffcb/Math/MathLib.java#L4)
+ */
+object MathLib {
     /**
      * xをmで割った余りを返す.
      */
     fun safeMod(x: Long, m: Long): Long {
-        val x = x % m
-        return if (x < 0) x + m else x
+        val vx = x % m
+        return if (vx < 0) vx + m else vx
     }
 
     fun invGcd(a: Long, b: Long): LongArray {
-        var a = a
-        a = safeMod(a, b)
-        if (a == 0L) return longArrayOf(b, 0)
+        var va = a
+        va = safeMod(va, b)
+        if (va == 0L) return longArrayOf(b, 0)
         var s = b
-        var t = a
+        var t = va
         var m0: Long = 0
         var m1: Long = 1
         while (t > 0) {
@@ -35,15 +40,18 @@ internal object MathLib {
     /**
      * xのn乗をmで割った余りを返す.
      */
-    fun powMod(x: Long, n: Long, m: Long): Long {
-        assert(n >= 0 && m >= 1)
-        var x = x % m
-        var n = n
+    fun powMod(x: Long, n: Long, m: Int): Long {
+        var vx = x
+        var vn = n
+        assert(vn >= 0)
+        assert(m >= 1)
+        if (m == 1) return 0L
+        vx = safeMod(vx, m.toLong())
         var ans = 1L
-        while (n > 0) {
-            if (n % 2 == 1L) ans = ans * x % m
-            x = x * x % m
-            n /= 2
+        while (vn > 0) {
+            if (vn and 1 == 1L) ans = ans * vx % m
+            vx = vx * vx % m
+            vn = vn ushr 1
         }
         return ans
     }
@@ -84,22 +92,22 @@ internal object MathLib {
     }
 
     fun floorSum(n: Long, m: Long, a: Long, b: Long): Long {
-        var a = a
-        var b = b
+        var va = a
+        var vb = b
         var ans: Long = 0
-        if (a >= m) {
-            ans += (n - 1) * n * (a / m) / 2
-            a %= m
+        if (va >= m) {
+            ans += (n - 1) * n * (va / m) / 2
+            va %= m
         }
-        if (b >= m) {
-            ans += n * (b / m)
-            b %= m
+        if (vb >= m) {
+            ans += n * (vb / m)
+            vb %= m
         }
-        val yMax = (a * n + b) / m
-        val xMax = yMax * m - b
+        val yMax = (va * n + vb) / m
+        val xMax = yMax * m - vb
         if (yMax == 0L) return ans
-        ans += (n - (xMax + a - 1) / a) * yMax
-        ans += floorSum(yMax, a, m, (a - xMax % a) % a)
+        ans += (n - (xMax + va - 1) / va) * yMax
+        ans += floorSum(yMax, va, m, (va - xMax % va) % va)
         return ans
     }
 }

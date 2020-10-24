@@ -1,7 +1,7 @@
 package jp.atcoder.library.kotlin.maxFlow
 
 /**
- * convert from [AtCoderLibraryForJava - MaxFlow](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/MaxFlow/MaxFlow.java)
+ * convert from [AtCoderLibraryForJava - MaxFlow](https://github.com/NASU41/AtCoderLibraryForJava/blob/3d5e128641057adbce8b4a727bba4079b8fa2c02/MinCostFlow/MinCostFlow.java)
  */
 class MaxFlow(private val n: Int) {
     inner class CapEdge internal constructor(val from: Int, val to: Int, var cap: Long, val rev: Int)
@@ -98,7 +98,7 @@ class MaxFlow(private val n: Int) {
             val u = er!!.to
             val e = g[u][er.rev]
             if (level[u] >= level[cur] || e!!.cap <= 0) continue
-            val d = dinicDFS(u, s, Math.min(f - res, e.cap), iter, level)
+            val d = dinicDFS(u, s, kotlin.math.min(f - res, e.cap), iter, level)
             if (d <= 0) continue
             e.cap -= d
             er.cap += d
@@ -131,7 +131,7 @@ class MaxFlow(private val n: Int) {
         used[cur] = true
         for (e in g[cur]) {
             if (used[e!!.to] || e.cap <= 0) continue
-            val d = fordFulkersonDFS(e.to, t, Math.min(f, e.cap), used)
+            val d = fordFulkersonDFS(e.to, t, kotlin.math.min(f, e.cap), used)
             if (d <= 0) continue
             e.cap -= d
             g[e.to][e.rev]!!.cap += d

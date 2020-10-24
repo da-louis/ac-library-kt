@@ -1,14 +1,12 @@
 package jp.atcoder.library.kotlin.dsu
 
-import java.util.*
-
 /**
  * Disjoint set union.
  *
- * convert from [AtCoderLibraryForJava - DSU](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/DSU/DSU.java)
+ * convert from [AtCoderLibraryForJava - DSU](https://github.com/NASU41/AtCoderLibraryForJava/blob/8b3a3b599790a9ca8c7dd92e036af4ddc5be1b05/DSU/DSU.java)
  */
 class DSU(private val n: Int) {
-    private val parentOrSize: IntArray = IntArray(n)
+    private val parentOrSize: IntArray = IntArray(n) { -1 }
 
     /**
      * Merge nodes.
@@ -75,11 +73,7 @@ class DSU(private val n: Int) {
         for (i in 0 until n) {
             result[leaderBuf[i]].add(i)
         }
-        result.removeIf { obj: ArrayList<Int> -> obj.isEmpty() }
+        result.removeIf { it.isEmpty() }
         return result
-    }
-
-    init {
-        Arrays.fill(parentOrSize, -1)
     }
 }
