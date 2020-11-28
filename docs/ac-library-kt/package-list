@@ -1,0 +1,16 @@
+$dokka.format:gfm
+$dokka.linkExtension:md
+
+jp.atcoder.library.kotlin.convolution
+jp.atcoder.library.kotlin.dsu
+jp.atcoder.library.kotlin.fenwickTree
+jp.atcoder.library.kotlin.lazySegTree
+jp.atcoder.library.kotlin.math
+jp.atcoder.library.kotlin.maxFlow
+jp.atcoder.library.kotlin.minCostFlow
+jp.atcoder.library.kotlin.modInt
+jp.atcoder.library.kotlin.scc
+jp.atcoder.library.kotlin.segTree
+jp.atcoder.library.kotlin.stringAlgorithm
+jp.atcoder.library.kotlin.twoSAT
+
