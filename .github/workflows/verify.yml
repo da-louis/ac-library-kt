@@ -1,0 +1,36 @@
+name: verify
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up Python
+      uses: actions/setup-python@v1
+
+    - name: Install dependencies
+      run: pip3 install -U online-judge-verify-helper
+
+    # required only if you want to verify Java code
+    - name: Install dependencies (Java)
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Install dependencies (Kotlin)
+      uses: fwilhe2/setup-kotlin@main
+
+    - name: Run tests
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        YUKICODER_TOKEN: ${{ secrets.YUKICODER_TOKEN }}
+        GH_PAT: ${{ secrets.GH_PAT }}
+      run: oj-verify all
