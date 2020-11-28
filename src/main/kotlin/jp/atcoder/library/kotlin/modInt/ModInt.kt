@@ -82,7 +82,7 @@ class ModIntFactory(private val mod: Int) {
         }
     }
 
-    internal interface ModArithmetic {
+    private interface ModArithmetic {
         fun mod(): Int
         fun add(a: Int, b: Int): Int
         fun sub(a: Int, b: Int): Int
