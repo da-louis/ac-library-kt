@@ -1,69 +1,84 @@
 package jp.atcoder.library.kotlin.lazySegTree
 
 import java.util.*
-import java.util.function.BiFunction
-import java.util.function.BinaryOperator
-import java.util.function.Predicate
 
 /**
  * Lazy Segment tree(0-indexed).
  *
  * convert from [AtCoderLibraryForJava - LazySegTree](https://github.com/NASU41/AtCoderLibraryForJava/blob/e7d9874fb6baac4f566a6af471e80941a55b22b2/LazySegTree/LazySegTree.java)
  */
-internal class LazySegTree<S, F>(
-    val MAX: Int,
-    op: BinaryOperator<S>,
+class LazySegTree<S, F>(
+    private val MAX: Int,
+    op: (S, S) -> S,
     e: S,
-    mapping: BiFunction<F, S, S>,
-    composition: BinaryOperator<F>,
+    mapping: (F, S) -> S,
+    composition: (F, F) -> F,
     id: F
 ) {
-    val N: Int
-    val Log: Int
-    val Op: BinaryOperator<S>
-    val E: S
-    val Mapping: BiFunction<F, S, S>
-    val Composition: BinaryOperator<F>
-    val Id: F
-    val Dat: Array<S>
-    val Laz: Array<F>
+    private val n: Int
+    private val log: Int
+    private val op: (S, S) -> S
+    private val e: S
+    private val mapping: (F, S) -> S
+    private val composition: (F, F) -> F
+    private val id: F
+    private val dat: Array<S>
+    private val laz: Array<F>
 
     constructor(
         dat: Array<S>,
-        op: BinaryOperator<S>,
+        op: (S, S) -> S,
         e: S,
-        mapping: BiFunction<F, S, S>,
-        composition: BinaryOperator<F>,
+        mapping: (F, S) -> S,
+        composition: (F, F) -> F,
         id: F
     ) : this(dat.size, op, e, mapping, composition, id) {
         build(dat)
     }
 
+    init {
+        var k = 1
+        while (k < MAX) k = k shl 1
+        n = k
+        log = Integer.numberOfTrailingZeros(n)
+        this.op = op
+        this.e = e
+        this.mapping = mapping
+        this.composition = composition
+        this.id = id
+        @Suppress("UNCHECKED_CAST")
+        dat = Array(n shl 1) { e as Any } as Array<S>
+        @Suppress("UNCHECKED_CAST")
+        laz = Array(n) { id as Any } as Array<F>
+        Arrays.fill(dat, this.e)
+        Arrays.fill(laz, this.id)
+    }
+
     private fun build(dat: Array<S>) {
         val l = dat.size
-        System.arraycopy(dat, 0, Dat, N, l)
-        for (i in N - 1 downTo 1) {
-            Dat[i] = Op.apply(Dat[i shl 1], Dat[i shl 1 or 1])
+        System.arraycopy(dat, 0, this.dat, n, l)
+        for (i in n - 1 downTo 1) {
+            this.dat[i] = op(this.dat[i shl 1], this.dat[i shl 1 or 1])
         }
     }
 
     private fun push(k: Int) {
-        if (Laz[k] === Id) return
+        if (laz[k] === id) return
         val lk = k shl 1
         val rk = k shl 1 or 1
-        Dat[lk] = Mapping.apply(Laz[k], Dat[lk])
-        Dat[rk] = Mapping.apply(Laz[k], Dat[rk])
-        if (lk < N) Laz[lk] = Composition.apply(Laz[k], Laz[lk])
-        if (rk < N) Laz[rk] = Composition.apply(Laz[k], Laz[rk])
-        Laz[k] = Id
+        dat[lk] = mapping(laz[k], dat[lk])
+        dat[rk] = mapping(laz[k], dat[rk])
+        if (lk < n) laz[lk] = composition(laz[k], laz[lk])
+        if (rk < n) laz[rk] = composition(laz[k], laz[rk])
+        laz[k] = id
     }
 
     private fun pushTo(k: Int) {
-        for (i in Log downTo 1) push(k shr i)
+        for (i in log downTo 1) push(k shr i)
     }
 
     private fun pushTo(lk: Int, rk: Int) {
-        for (i in Log downTo 1) {
+        for (i in log downTo 1) {
             if (lk shr i shl i != lk) push(lk shr i)
             if (rk shr i shl i != rk) push(rk shr i)
         }
@@ -73,20 +88,20 @@ internal class LazySegTree<S, F>(
         var vk = k
         vk = vk shr 1
         while (vk > 0) {
-            Dat[vk] = Op.apply(Dat[vk shl 1], Dat[vk shl 1 or 1])
+            dat[vk] = op(dat[vk shl 1], dat[vk shl 1 or 1])
             vk = vk shr 1
         }
     }
 
     private fun updateFrom(lk: Int, rk: Int) {
-        for (i in 1..Log) {
+        for (i in 1..log) {
             if (lk shr i shl i != lk) {
                 val lki = lk shr i
-                Dat[lki] = Op.apply(Dat[lki shl 1], Dat[lki shl 1 or 1])
+                dat[lki] = op(dat[lki shl 1], dat[lki shl 1 or 1])
             }
             if (rk shr i shl i != rk) {
                 val rki = rk - 1 shr i
-                Dat[rki] = Op.apply(Dat[rki shl 1], Dat[rki shl 1 or 1])
+                dat[rki] = op(dat[rki shl 1], dat[rki shl 1 or 1])
             }
         }
     }
@@ -94,18 +109,18 @@ internal class LazySegTree<S, F>(
     operator fun set(p: Int, x: S) {
         var vp = p
         exclusiveRangeCheck(vp)
-        vp += N
+        vp += n
         pushTo(vp)
-        Dat[vp] = x
+        dat[vp] = x
         updateFrom(vp)
     }
 
     operator fun get(p: Int): S {
         var vp = p
         exclusiveRangeCheck(vp)
-        vp += N
+        vp += n
         pushTo(vp)
-        return Dat[vp]
+        return dat[vp]
     }
 
     fun prod(l: Int, r: Int): S {
@@ -114,31 +129,31 @@ internal class LazySegTree<S, F>(
         require(vl <= vr) { String.format("Invalid range: [%d, %d)", vl, vr) }
         inclusiveRangeCheck(vl)
         inclusiveRangeCheck(vr)
-        if (vl == vr) return E
-        vl += N
-        vr += N
+        if (vl == vr) return e
+        vl += n
+        vr += n
         pushTo(vl, vr)
-        var sumLeft = E
-        var sumRight = E
+        var sumLeft = e
+        var sumRight = e
         while (vl < vr) {
-            if (vl and 1 == 1) sumLeft = Op.apply(sumLeft, Dat[vl++])
-            if (vr and 1 == 1) sumRight = Op.apply(Dat[--vr], sumRight)
+            if (vl and 1 == 1) sumLeft = op(sumLeft, dat[vl++])
+            if (vr and 1 == 1) sumRight = op(dat[--vr], sumRight)
             vl = vl shr 1
             vr = vr shr 1
         }
-        return Op.apply(sumLeft, sumRight)
+        return op(sumLeft, sumRight)
     }
 
     fun allProd(): S {
-        return Dat[1]
+        return dat[1]
     }
 
     fun apply(p: Int, f: F) {
         var vp = p
         exclusiveRangeCheck(vp)
-        vp += N
+        vp += n
         pushTo(vp)
-        Dat[vp] = Mapping.apply(f, Dat[vp])
+        dat[vp] = mapping(f, dat[vp])
         updateFrom(vp)
     }
 
@@ -149,21 +164,21 @@ internal class LazySegTree<S, F>(
         inclusiveRangeCheck(vl)
         inclusiveRangeCheck(vr)
         if (vl == vr) return
-        vl += N
-        vr += N
+        vl += n
+        vr += n
         pushTo(vl, vr)
         var l2 = vl
         var r2 = vr
         while (l2 < r2) {
             if (l2 and 1 == 1) {
-                Dat[l2] = Mapping.apply(f, Dat[l2])
-                if (l2 < N) Laz[l2] = Composition.apply(f, Laz[l2])
+                dat[l2] = mapping(f, dat[l2])
+                if (l2 < n) laz[l2] = composition(f, laz[l2])
                 l2++
             }
             if (r2 and 1 == 1) {
                 r2--
-                Dat[r2] = Mapping.apply(f, Dat[r2])
-                if (r2 < N) Laz[r2] = Composition.apply(f, Laz[r2])
+                dat[r2] = mapping(f, dat[r2])
+                if (r2 < n) laz[r2] = composition(f, laz[r2])
             }
             l2 = l2 shr 1
             r2 = r2 shr 1
@@ -171,56 +186,56 @@ internal class LazySegTree<S, F>(
         updateFrom(vl, vr)
     }
 
-    fun maxRight(l: Int, g: Predicate<S>): Int {
+    fun maxRight(l: Int, g: (S) -> Boolean): Int {
         var vl = l
         inclusiveRangeCheck(vl)
-        require(g.test(E)) { "Identity element must satisfy the condition." }
+        require(g(e)) { "Identity element must satisfy the condition." }
         if (vl == MAX) return MAX
-        vl += N
+        vl += n
         pushTo(vl)
-        var sum = E
+        var sum = e
         do {
             vl = vl shr Integer.numberOfTrailingZeros(vl)
-            if (!g.test(Op.apply(sum, Dat[vl]))) {
-                while (vl < N) {
+            if (!g(op(sum, dat[vl]))) {
+                while (vl < n) {
                     push(vl)
                     vl = vl shl 1
-                    if (g.test(Op.apply(sum, Dat[vl]))) {
-                        sum = Op.apply(sum, Dat[vl])
+                    if (g(op(sum, dat[vl]))) {
+                        sum = op(sum, dat[vl])
                         vl++
                     }
                 }
-                return vl - N
+                return vl - n
             }
-            sum = Op.apply(sum, Dat[vl])
+            sum = op(sum, dat[vl])
             vl++
         } while (vl and -vl != vl)
         return MAX
     }
 
-    fun minLeft(r: Int, g: Predicate<S>): Int {
+    fun minLeft(r: Int, g: (S) -> Boolean): Int {
         var vr = r
         inclusiveRangeCheck(vr)
-        require(g.test(E)) { "Identity element must satisfy the condition." }
+        require(g(e)) { "Identity element must satisfy the condition." }
         if (vr == 0) return 0
-        vr += N
+        vr += n
         pushTo(vr - 1)
-        var sum = E
+        var sum = e
         do {
             vr--
             while (vr > 1 && vr and 1 == 1) vr = vr shr 1
-            if (!g.test(Op.apply(Dat[vr], sum))) {
-                while (vr < N) {
+            if (!g(op(dat[vr], sum))) {
+                while (vr < n) {
                     push(vr)
                     vr = vr shl 1 or 1
-                    if (g.test(Op.apply(Dat[vr], sum))) {
-                        sum = Op.apply(Dat[vr], sum)
+                    if (g(op(dat[vr], sum))) {
+                        sum = op(dat[vr], sum)
                         vr--
                     }
                 }
-                return vr + 1 - N
+                return vr + 1 - n
             }
-            sum = Op.apply(Dat[vr], sum)
+            sum = op(dat[vr], sum)
         } while (vr and -vr != vr)
         return 0
     }
@@ -248,17 +263,17 @@ internal class LazySegTree<S, F>(
     }
 
     private fun simulatePushAll(): Array<S> {
-        val simDat = Arrays.copyOf(Dat, 2 * N)
-        val simLaz = Arrays.copyOf(Laz, 2 * N)
-        for (k in 1 until N) {
-            if (simLaz[k] === Id) continue
+        val simDat = Arrays.copyOf(dat, 2 * n)
+        val simLaz = Arrays.copyOf(laz, 2 * n)
+        for (k in 1 until n) {
+            if (simLaz[k] === id) continue
             val lk = k shl 1
             val rk = k shl 1 or 1
-            simDat[lk] = Mapping.apply(simLaz[k], simDat[lk])
-            simDat[rk] = Mapping.apply(simLaz[k], simDat[rk])
-            if (lk < N) simLaz[lk] = Composition.apply(simLaz[k], simLaz[lk])
-            if (rk < N) simLaz[rk] = Composition.apply(simLaz[k], simLaz[rk])
-            simLaz[k] = Id
+            simDat[lk] = mapping(simLaz[k], simDat[lk])
+            simDat[rk] = mapping(simLaz[k], simDat[rk])
+            if (lk < n) simLaz[lk] = composition(simLaz[k], simLaz[lk])
+            if (rk < n) simLaz[rk] = composition(simLaz[k], simLaz[rk])
+            simLaz[k] = id
         }
         return simDat
     }
@@ -268,7 +283,7 @@ internal class LazySegTree<S, F>(
     }
 
     private fun toDetailedString(k: Int, sp: Int, dat: Array<S>): String {
-        if (k >= N) return indent(sp) + dat[k]
+        if (k >= n) return indent(sp) + dat[k]
         var s = ""
         s += toDetailedString(k shl 1 or 1, sp + indent, dat)
         s += "\n"
@@ -282,9 +297,9 @@ internal class LazySegTree<S, F>(
         val dat = simulatePushAll()
         val sb = StringBuilder()
         sb.append('[')
-        for (i in 0 until N) {
-            sb.append(dat[i + N])
-            if (i < N - 1) sb.append(',').append(' ')
+        for (i in 0 until n) {
+            sb.append(dat[i + n])
+            if (i < n - 1) sb.append(',').append(' ')
         }
         sb.append(']')
         return sb.toString()
@@ -297,23 +312,5 @@ internal class LazySegTree<S, F>(
             while (vn-- > 0) sb.append(' ')
             return sb.toString()
         }
-    }
-
-    init {
-        var k = 1
-        while (k < MAX) k = k shl 1
-        N = k
-        Log = Integer.numberOfTrailingZeros(N)
-        Op = op
-        E = e
-        Mapping = mapping
-        Composition = composition
-        Id = id
-        @Suppress("UNCHECKED_CAST")
-        Dat = Array(N shl 1) { e as Any } as Array<S>
-        @Suppress("UNCHECKED_CAST")
-        Laz = Array(N) { id as Any } as Array<F>
-        Arrays.fill(Dat, E)
-        Arrays.fill(Laz, Id)
     }
 }
