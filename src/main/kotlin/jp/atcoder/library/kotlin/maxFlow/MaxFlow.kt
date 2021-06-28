@@ -1,7 +1,7 @@
 package jp.atcoder.library.kotlin.maxFlow
 
 /**
- * convert from [AtCoderLibraryForJava - MaxFlow](https://github.com/NASU41/AtCoderLibraryForJava/blob/3d5e128641057adbce8b4a727bba4079b8fa2c02/MinCostFlow/MinCostFlow.java)
+ * convert from [AtCoderLibraryForJava - MaxFlow](https://github.com/NASU41/AtCoderLibraryForJava/blob/ecbea683afa0ad51d901e327d2b5d620cfcb8410/MaxFlow/MaxFlow.java)
  */
 class MaxFlow(private val n: Int) {
     inner class CapEdge internal constructor(val from: Int, val to: Int, var cap: Long, val rev: Int)

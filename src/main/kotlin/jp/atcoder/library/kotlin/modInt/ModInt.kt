@@ -3,7 +3,7 @@ package jp.atcoder.library.kotlin.modInt
 /**
  * ModInt を生成するためのファクトリ.
  *
- * convert from [AtCoderLibraryForJava - FenwickTree](https://github.com/NASU41/AtCoderLibraryForJava/blob/24160d880a5fc6d1caf9b95baa875e47fb568ef3/FenwickTree/FenwickTree.java)
+ * convert from [AtCoderLibraryForJava - ModInt](https://github.com/NASU41/AtCoderLibraryForJava/blob/fdfb41de29f0dc3dacd9286860fc1302f5a30015/ModInt/ModInt.java)
  */
 class ModIntFactory(private val mod: Int) {
     private val ma = ModArithmetic.of(mod)
