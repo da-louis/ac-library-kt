@@ -3,7 +3,7 @@ package jp.atcoder.library.kotlin.math
 /**
  * MathLib.
  *
- * convert from [AtCoderLibraryForJava - MathLib](https://github.com/NASU41/AtCoderLibraryForJava/blob/132179385293fd6c0d522d73f3f48435967fffcb/Math/MathLib.java#L4)
+ * convert from [AtCoderLibraryForJava - MathLib](https://github.com/NASU41/AtCoderLibraryForJava/blob/132179385293fd6c0d522d73f3f48435967fffcb/Math/MathLib.java)
  */
 object MathLib {
     /**

@@ -8,7 +8,7 @@ import java.util.stream.Collectors
 /**
  * Convolution.
  *
- * convert from [AtCoderLibraryForJava - Convolution](https://github.com/NASU41/AtCoderLibraryForJava/blob/a7e73af20f0553b9d9c4a2e7c4194af817b12485/Convolution/Convolution.java#L10)
+ * convert from [AtCoderLibraryForJava - Convolution](https://github.com/NASU41/AtCoderLibraryForJava/blob/a7e73af20f0553b9d9c4a2e7c4194af817b12485/Convolution/Convolution.java)
  */
 class Convolution {
     /**
